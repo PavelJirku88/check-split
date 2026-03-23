@@ -82,12 +82,12 @@ font-size: .92rem; padding: 2px 0; outline: none; min-width: 0;
 .name-in:focus { border-bottom-color: rgba(255,255,255,.8); }
 
 .card-items { padding: 12px 14px 8px; font-family: Arial, sans-serif; width: 100%; overflow: hidden; }
-.irow { display: grid; grid-template-columns: minmax(0, 1fr) 64px 24px; gap: 6px; align-items: center; margin-bottom: 5px; width: 100%; }
-.ilbl, .ipri {
+.irow { display: grid; grid-template-columns: 1fr 24px; gap: 8px; align-items: center; margin-bottom: 5px; width: 100%; }
+.ipri {
 border: none; border-bottom: 1px solid #d0c8c0;
 background: transparent; font-family: Arial, sans-serif;
-font-size: .85rem; color: #1a1612;
-padding: 4px 0; outline: none; width: 100%; min-width: 0;
+font-size: 1rem; color: #1a1612;
+padding: 6px 0; outline: none; width: 100%; min-width: 0;
 }
 .ipri { text-align: right; }
 .ilbl:focus, .ipri:focus { border-bottom-color: #c4622d; }
@@ -346,7 +346,6 @@ function makeRow(pi, ii) {
   rm._pi = pi; rm._ii = ii;
   rm.onclick = function() { removeItem(this._pi, this._ii); };
 
-  row.appendChild(lbl);
   row.appendChild(pri);
   row.appendChild(rm);
   return row;
@@ -500,8 +499,8 @@ function setTxt(id, txt) { var e = gid(id); if (e) e.textContent = txt; }
 // ── save / load ────────────────────────────────────────────────────────
 function doSave() {
   try {
-    sessionStorage.setItem('cs7', JSON.stringify({
-      v: 7, N: N, people: people,
+    sessionStorage.setItem('cs8', JSON.stringify({
+      v: 8, N: N, people: people,
       bill: gid('f-bill').value,
       cur:  gid('f-cur').value,
       rate: gid('f-rate').value,
@@ -512,10 +511,10 @@ function doSave() {
 
 function doLoad() {
   try {
-    var raw = sessionStorage.getItem('cs7');
+    var raw = sessionStorage.getItem('cs8');
     if (!raw) return null;
     var d = JSON.parse(raw);
-    if (!d || d.v !== 7) return null;
+    if (!d || d.v !== 8) return null;
     return d;
   } catch(e) { return null; }
 }
