@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Check Split</title>
+<title>Check Splitter</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { max-width: 100%; overflow-x: hidden; }
@@ -33,7 +33,7 @@ height: 2px;
 margin-top: 18px;
 background: repeating-linear-gradient(90deg,#1a1612 0 8px,transparent 8px 16px);
 }
-h1 { font-size: 2.8rem; line-height: 1; }
+h1 { font-size: 1.5rem; line-height: 1; }
 .sub { margin-top: 6px; font-size: .78rem; color: #6b5e52; letter-spacing: .14em; text-transform: uppercase; font-family: Arial, sans-serif; }
 
 /* Settings */
@@ -48,12 +48,13 @@ gap: 16px;
 align-items: start;
 }
 .field label { display: block; font-size: .67rem; font-weight: bold; text-transform: uppercase; letter-spacing: .1em; color: #6b5e52; margin-bottom: 5px; font-family: Arial, sans-serif; }
+.field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; grid-column: 1 / -1; }
 .field input, .field select {
 width: 100%; padding: 8px 10px;
 border: 1.5px solid #c0b8b0;
 background: #f5f0e8;
 font-family: Arial, sans-serif;
-font-size: 1rem; color: #1a1612;
+font-size: 16px; color: #1a1612;
 }
 .field input:focus, .field select:focus { outline: 2px solid #c4622d; }
 #f-bill { border-color: #c4622d; background: #fff9f6; font-weight: bold; }
@@ -77,7 +78,7 @@ width: 100%;
 flex: 1; background: transparent; border: none;
 border-bottom: 1px solid rgba(255,255,255,.3);
 color: #faf7f2; font-family: Arial, sans-serif;
-font-size: .92rem; padding: 2px 0; outline: none; min-width: 0;
+font-size: 16px; padding: 2px 0; outline: none; min-width: 0;
 }
 .name-in:focus { border-bottom-color: rgba(255,255,255,.8); }
 
@@ -86,7 +87,7 @@ font-size: .92rem; padding: 2px 0; outline: none; min-width: 0;
 .ipri {
 border: none; border-bottom: 1px solid #d0c8c0;
 background: transparent; font-family: Arial, sans-serif;
-font-size: 1rem; color: #1a1612;
+font-size: 16px; color: #1a1612;
 padding: 6px 0; outline: none; width: 100%; min-width: 0;
 }
 .ipri { text-align: right; }
@@ -137,7 +138,7 @@ cursor: pointer; text-transform: uppercase;
   <div id="errmsg"></div>
 
   <header>
-    <h1>Check Split</h1>
+    <h1>Check Splitter</h1>
   </header>
 
   <div class="settings">
@@ -149,9 +150,9 @@ cursor: pointer; text-transform: uppercase;
     <div class="field">
       <label>Number of People</label>
       <select id="f-n">
-        <option value="2">2 people</option>
+        <option value="2" selected>2 people</option>
         <option value="3">3 people</option>
-        <option value="4" selected>4 people</option>
+        <option value="4">4 people</option>
         <option value="5">5 people</option>
         <option value="6">6 people</option>
         <option value="7">7 people</option>
@@ -162,13 +163,15 @@ cursor: pointer; text-transform: uppercase;
       <label>Currency</label>
       <input id="f-cur" type="text" value="EUR" autocomplete="off">
     </div>
-    <div class="field">
-      <label>Conversion Rate</label>
-      <input id="f-rate" type="text" inputmode="decimal" value="1" autocomplete="off">
-    </div>
-    <div class="field">
-      <label>Converted To</label>
-      <input id="f-ccur" type="text" value="" autocomplete="off">
+    <div class="field-pair">
+      <div class="field">
+        <label>Converted To</label>
+        <input id="f-ccur" type="text" value="" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Conversion Rate</label>
+        <input id="f-rate" type="text" inputmode="decimal" value="" autocomplete="off">
+      </div>
     </div>
   </div>
 
@@ -198,7 +201,7 @@ window.onerror = function(msg, src, line, col, err) {
 };
 
 // ── state ──────────────────────────────────────────────────────────────
-var N      = 4;
+var N      = 2;
 var people = [];
 
 // ── helpers ────────────────────────────────────────────────────────────
@@ -499,8 +502,8 @@ function setTxt(id, txt) { var e = gid(id); if (e) e.textContent = txt; }
 // ── save / load ────────────────────────────────────────────────────────
 function doSave() {
   try {
-    sessionStorage.setItem('cs8', JSON.stringify({
-      v: 8, N: N, people: people,
+    sessionStorage.setItem('cs9', JSON.stringify({
+      v: 9, N: N, people: people,
       bill: gid('f-bill').value,
       cur:  gid('f-cur').value,
       rate: gid('f-rate').value,
@@ -511,10 +514,10 @@ function doSave() {
 
 function doLoad() {
   try {
-    var raw = sessionStorage.getItem('cs8');
+    var raw = sessionStorage.getItem('cs9');
     if (!raw) return null;
     var d = JSON.parse(raw);
-    if (!d || d.v !== 8) return null;
+    if (!d || d.v !== 9) return null;
     return d;
   } catch(e) { return null; }
 }
@@ -538,7 +541,7 @@ if (saved && saved.people && saved.people.length) {
   gid('f-n').value    = N;
   gid('f-bill').value = saved.bill  || '';
   gid('f-cur').value  = saved.cur   || 'EUR';
-  gid('f-rate').value = saved.rate  || '1';
+  gid('f-rate').value = saved.rate  || '';
   gid('f-ccur').value = saved.ccur  || '';
 } else {
   N      = 4;
